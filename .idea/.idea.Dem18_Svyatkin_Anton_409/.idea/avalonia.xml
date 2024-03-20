@@ -3,7 +3,10 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="ChooseRequestWIndow.axaml" value="Dem18_Svyatkin_Anton_409.csproj" />
         <entry key="MainWindow.axaml" value="Dem18_Svyatkin_Anton_409.csproj" />
+        <entry key="MessageWindow.axaml" value="Dem18_Svyatkin_Anton_409.csproj" />
+        <entry key="RequestWindow.axaml" value="Dem18_Svyatkin_Anton_409.csproj" />
       </map>
     </option>
   </component>

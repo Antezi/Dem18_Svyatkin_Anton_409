@@ -1,0 +1,44 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Dem18_Svyatkin_Anton_409.ChooseRequestWindow"
+        Title="ChooseRequestWindow">
+    <Grid>
+        <TabControl>
+            <TabItem>
+                <TabItem.Header>
+                    Подать заявку
+                </TabItem.Header>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Border Grid.Column="0" Width="300" Height="300" CornerRadius="20" Background="#34FADC" Name="SingleRequest" DoubleTapped="SingleRequest_OnDoubleTapped">
+                         <StackPanel>
+                             <Image Height="200" Width="200" Margin="10, 30, 10, 10" Source="Assets/one_person.png"/>
+                             <TextBlock Margin="10" HorizontalAlignment="Center" Text="Одиночная запись"/>
+                         </StackPanel>
+                    </Border>
+                    
+                    <Border Grid.Column="1" Width="300" Height="300" CornerRadius="20" Background="#34FADC" Name="GroupRequest" DoubleTapped="GroupRequest_OnDoubleTapped">
+                        <StackPanel>
+                            <Image Height="200" Width="200" Margin="10, 30, 10, 10" Source="Assets/many_person.png"/>
+                            <TextBlock Margin="10" HorizontalAlignment="Center" Text="Групповая запись"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+            
+            <TabItem>
+                <TabItem.Header>
+                    Просмотреть поданные заявки
+                </TabItem.Header>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

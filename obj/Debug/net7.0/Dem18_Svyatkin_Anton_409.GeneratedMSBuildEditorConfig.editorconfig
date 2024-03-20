@@ -19,5 +19,14 @@ build_property.EnableGeneratedComInterfaceComImportInterop =
 [C:/Users/Anton/RiderProjects/Dem18_Svyatkin_Anton_409/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[C:/Users/Anton/RiderProjects/Dem18_Svyatkin_Anton_409/ChooseRequestWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [C:/Users/Anton/RiderProjects/Dem18_Svyatkin_Anton_409/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/Anton/RiderProjects/Dem18_Svyatkin_Anton_409/MessageWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/Anton/RiderProjects/Dem18_Svyatkin_Anton_409/RequestWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
