@@ -29,5 +29,11 @@ public partial class Request
 
     public int Passid { get; set; }
 
+    public string? Photo { get; set; }
+
+    public int? Purpose { get; set; }
+
+    public virtual Purpose? PurposeNavigation { get; set; }
+
     public virtual User User { get; set; } = null!;
 }

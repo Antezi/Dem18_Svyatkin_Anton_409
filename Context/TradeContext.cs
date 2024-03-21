@@ -16,11 +16,15 @@ public partial class TradeContext : DbContext
     {
     }
 
+    public virtual DbSet<Department> Departments { get; set; }
+
     public virtual DbSet<Division> Divisions { get; set; }
 
     public virtual DbSet<Goal> Goals { get; set; }
 
     public virtual DbSet<Pass> Passes { get; set; }
+
+    public virtual DbSet<Purpose> Purposes { get; set; }
 
     public virtual DbSet<Request> Requests { get; set; }
 
@@ -34,6 +38,20 @@ public partial class TradeContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Department>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("department_pk");
+
+            entity.ToTable("department");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasColumnType("character varying")
+                .HasColumnName("name");
+        });
+
         modelBuilder.Entity<Division>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("division_pk");
@@ -41,7 +59,7 @@ public partial class TradeContext : DbContext
             entity.ToTable("division");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.Name)
                 .HasColumnType("character varying")
@@ -79,6 +97,20 @@ public partial class TradeContext : DbContext
                 .HasConstraintName("pass_fk");
         });
 
+        modelBuilder.Entity<Purpose>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("purpose_pk");
+
+            entity.ToTable("purpose");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasColumnType("character varying")
+                .HasColumnName("name");
+        });
+
         modelBuilder.Entity<Request>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("request_pk");
@@ -114,7 +146,15 @@ public partial class TradeContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(12)
                 .HasColumnName("phone");
+            entity.Property(e => e.Photo)
+                .HasColumnType("character varying")
+                .HasColumnName("photo");
+            entity.Property(e => e.Purpose).HasColumnName("purpose");
             entity.Property(e => e.Userid).HasColumnName("userid");
+
+            entity.HasOne(d => d.PurposeNavigation).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.Purpose)
+                .HasConstraintName("request_fk1");
 
             entity.HasOne(d => d.User).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.Userid)
@@ -129,35 +169,36 @@ public partial class TradeContext : DbContext
             entity.ToTable("user");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
-            entity.Property(e => e.Birthdate).HasColumnName("birthdate");
-            entity.Property(e => e.Department).HasColumnName("department");
+            entity.Property(e => e.Appointment)
+                .HasColumnType("character varying")
+                .HasColumnName("appointment");
             entity.Property(e => e.Email)
-                .HasMaxLength(100)
+                .HasColumnType("character varying")
                 .HasColumnName("email");
             entity.Property(e => e.Firstname)
-                .HasMaxLength(100)
+                .HasColumnType("character varying")
                 .HasColumnName("firstname");
+            entity.Property(e => e.Lastname)
+                .HasColumnType("character varying")
+                .HasColumnName("lastname");
+            entity.Property(e => e.Login)
+                .HasColumnType("character varying")
+                .HasColumnName("login");
+            entity.Property(e => e.Passport)
+                .HasColumnType("character varying")
+                .HasColumnName("passport");
             entity.Property(e => e.Password)
                 .HasColumnType("character varying")
                 .HasColumnName("password");
             entity.Property(e => e.Patronymic)
-                .HasMaxLength(100)
+                .HasColumnType("character varying")
                 .HasColumnName("patronymic");
             entity.Property(e => e.Phone)
-                .HasMaxLength(100)
+                .HasColumnType("character varying")
                 .HasColumnName("phone");
             entity.Property(e => e.RoleCode).HasColumnName("role_code");
-            entity.Property(e => e.Surname)
-                .HasMaxLength(100)
-                .HasColumnName("surname");
-
-            entity.HasOne(d => d.IdNavigation).WithOne(p => p.User)
-                .HasForeignKey<User>(d => d.Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("employee_fk");
         });
 
         modelBuilder.Entity<Userrole>(entity =>
