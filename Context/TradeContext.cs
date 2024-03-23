@@ -22,6 +22,8 @@ public partial class TradeContext : DbContext
 
     public virtual DbSet<Divisionrequest> Divisionrequests { get; set; }
 
+    public virtual DbSet<Employee> Employees { get; set; }
+
     public virtual DbSet<Goal> Goals { get; set; }
 
     public virtual DbSet<Pass> Passes { get; set; }
@@ -86,6 +88,33 @@ public partial class TradeContext : DbContext
                 .HasForeignKey(d => d.Divisionid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("divisionrequest_division_fk");
+        });
+
+        modelBuilder.Entity<Employee>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("employee_pk");
+
+            entity.ToTable("employee");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Code)
+                .HasColumnType("character varying")
+                .HasColumnName("code");
+            entity.Property(e => e.Departmentid).HasColumnName("departmentid");
+            entity.Property(e => e.Divisionid).HasColumnName("divisionid");
+            entity.Property(e => e.Fio)
+                .HasColumnType("character varying")
+                .HasColumnName("fio");
+
+            entity.HasOne(d => d.Department).WithMany(p => p.Employees)
+                .HasForeignKey(d => d.Departmentid)
+                .HasConstraintName("employee_fk_1");
+
+            entity.HasOne(d => d.Division).WithMany(p => p.Employees)
+                .HasForeignKey(d => d.Divisionid)
+                .HasConstraintName("employee_fk");
         });
 
         modelBuilder.Entity<Goal>(entity =>

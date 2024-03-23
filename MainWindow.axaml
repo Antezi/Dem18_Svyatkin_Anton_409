@@ -4,7 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
         x:Class="Dem18_Svyatkin_Anton_409.MainWindow"
-        Title="Dem18_Svyatkin_Anton_409">
+        Title="Dem18_Svyatkin_Anton_409"
+        Icon="Assets\logo.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>

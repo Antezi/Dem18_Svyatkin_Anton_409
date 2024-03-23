@@ -22,7 +22,7 @@ public partial class RequestWindow : Window
     private User currentUser;
     private string imgName, fileImgName;
     private int _requestType;
-    private ComboBox _purposeComboBox, _divisionComboBox;
+    private ComboBox _purposeComboBox, _divisionComboBox, _fIOComboBox;
     private Image _personImage; 
     private CalendarDatePicker  _startDateCalendarPicker, _endDateCalendarPicker, _birthdateCalendarPicker, _grBirthdateCalendarPicker;
 
@@ -64,7 +64,7 @@ public partial class RequestWindow : Window
         
         InitializeComponent();
 
-        _passFIOTextBox = this.FindControl<TextBox>("PassFIOTextBox");
+        //_passFIOTextBox = this.FindControl<TextBox>("PassFIOTextBox");
         _lastNameTextBox = this.FindControl<TextBox>("LastNameTextBox");
         _firstNameTextBox = this.FindControl<TextBox>("FirstNameTextBox");
         _patronymicTextBox = this.FindControl<TextBox>("PatronymicTextBox");
@@ -86,6 +86,7 @@ public partial class RequestWindow : Window
 
         _purposeComboBox = this.FindControl<ComboBox>("PurposeComboBox");
         _divisionComboBox = this.FindControl<ComboBox>("DivisionComboBox");
+        _fIOComboBox = this.FindControl<ComboBox>("FIOComboBox");
 
         _startDateCalendarPicker = this.FindControl<CalendarDatePicker>("StartDateCalendarPicker");
         _endDateCalendarPicker = this.FindControl<CalendarDatePicker>("EndDateCalendarPicker");
@@ -115,6 +116,8 @@ public partial class RequestWindow : Window
             string item = p.Name;
             items.Add(item);
         }
+        
+        var _divisions = context.Employees.ToList();
 
         _divisionComboBox.Items = items;
 
@@ -163,13 +166,13 @@ public partial class RequestWindow : Window
             _emailTextBox.Text != "" && _phoneTextBox.Text != "" && _noteTextBox.Text != "" && _serialTextBox.Text != ""
             && _numberTextBox.Text != "" && _purposeComboBox.SelectedIndex != -1 &&
             _birthdateCalendarPicker.SelectedDate != null && _startDateCalendarPicker.SelectedDate != null && _endDateCalendarPicker.SelectedDate != null &&
-            _passFIOTextBox.Text != "" && _divisionComboBox.SelectedIndex != -1)
+            _fIOComboBox.SelectedIndex != -1 && _divisionComboBox.SelectedIndex != -1)
         {
             try
             {
                 TradeContext context = new TradeContext();
                 currentDivisionRequest.Divisionid = _divisionComboBox.SelectedIndex + 1;
-                currentDivisionRequest.Fio = _passFIOTextBox.Text;
+                currentDivisionRequest.Fio = _fIOComboBox.SelectedItem.ToString();
 
                 context.Divisionrequests.Add(currentDivisionRequest);
                 context.SaveChanges();
@@ -319,5 +322,34 @@ public partial class RequestWindow : Window
         ChooseRequestWindow chooseRequestWindow = new ChooseRequestWindow(currentUser);
         chooseRequestWindow.Show();
         this.Close();
+    }
+
+    private void DivisionComboBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        TradeContext context = new TradeContext();
+        List<string> items = new List<string>();
+        try
+        {
+            int i = _divisionComboBox.SelectedIndex;
+            i++;
+            var _divisions = context.Employees.ToList();
+            _divisions = _divisions.Where(d => d.Divisionid == _divisionComboBox.SelectedIndex + 1).ToList();
+            var purposes = context.Employees.Where(d => d.Divisionid.Equals(i)).ToList();
+            
+            foreach (var p in _divisions)
+            {
+                string item = p.Fio;
+                items.Add(item);
+            }
+
+            _fIOComboBox.Items = items;
+        }
+        catch (Exception exception)
+        {
+
+        }
+        //var purposes = context.Employees.Where(d => d.Divisionid == _divisionComboBox.SelectedIndex + 1).ToList();
+
+
     }
 }

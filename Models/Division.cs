@@ -10,4 +10,6 @@ public partial class Division
     public string Name { get; set; } = null!;
 
     public virtual ICollection<Divisionrequest> Divisionrequests { get; set; } = new List<Divisionrequest>();
+
+    public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 }
