@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:Dem18_Svyatkin_Anton_409.Models"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Dem18_Svyatkin_Anton_409.ChooseRequestWindow"
         Title="ChooseRequestWindow"
@@ -45,7 +46,16 @@
                 </TabItem.Header>
                 
                 <Grid>
-                    <ListBox Background="White" Name="RequestListBox">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <DockPanel Grid.Row="0">
+                        <ComboBox Margin="10, 0, 0, 0" Width="150" Height="30" HorizontalAlignment="Left" Name="TypeComboBox"/>
+                    </DockPanel>
+                    
+                    <ListBox Grid.Row="1" Background="White" Name="RequestListBox" HorizontalAlignment="Center">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel Orientation="Vertical"/>
@@ -53,7 +63,7 @@
                         </ListBox.ItemsPanel>
                         
                         <ListBox.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="models:RequestView">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -62,7 +72,26 @@
                                     </Grid.ColumnDefinitions>
                                     
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock />
+                                        <TextBlock Margin="10" Text="{Binding FirstnameView}"/>
+                                        <TextBlock Margin="10" Text="{Binding LastnameView}"/>
+                                        <TextBlock Margin="10" Text="{Binding PatronymicView}"/>
+                                        <TextBlock Margin="10" Text="{Binding PhoneView}"/>
+                                        <TextBlock Margin="10" Text="{Binding EmailView}"/>
+                                        <TextBlock Margin="10" Text="{Binding TypeView}"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Margin="10" Text="{Binding OrganisationView}"/>
+                                        <TextBlock Margin="10" Text="{Binding NoteView}"/>
+                                        <TextBlock Margin="10" Text="{Binding BirthdateView}"/>
+                                        <TextBlock Margin="10" Text="{Binding PassportView}"/>
+                                        <TextBlock Margin="10" Text="{Binding StartDateView}" TextWrapping="Wrap"/>
+                                        <TextBlock Margin="10" Text="{Binding EndDateView}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel HorizontalAlignment="Center" Grid.Column="2">
+                                        <Image Margin="10" Height="150" Width="150" Source="{Binding PhotoView}"/>
+                                        <TextBlock Margin="10" Text="{Binding PassportscanView}"/>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>

@@ -92,9 +92,9 @@ public partial class TradeContext : DbContext
 
         modelBuilder.Entity<Employee>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("employee_pk");
+            entity.HasKey(e => e.Id).HasName("employees_pk");
 
-            entity.ToTable("employee");
+            entity.ToTable("employees");
 
             entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn()
@@ -110,11 +110,11 @@ public partial class TradeContext : DbContext
 
             entity.HasOne(d => d.Department).WithMany(p => p.Employees)
                 .HasForeignKey(d => d.Departmentid)
-                .HasConstraintName("employee_fk_1");
+                .HasConstraintName("employees_fk");
 
             entity.HasOne(d => d.Division).WithMany(p => p.Employees)
                 .HasForeignKey(d => d.Divisionid)
-                .HasConstraintName("employee_fk");
+                .HasConstraintName("employees_fk_1");
         });
 
         modelBuilder.Entity<Goal>(entity =>
@@ -180,6 +180,9 @@ public partial class TradeContext : DbContext
             entity.Property(e => e.Passport)
                 .HasColumnType("character varying")
                 .HasColumnName("passport");
+            entity.Property(e => e.Passportscan)
+                .HasColumnType("character varying")
+                .HasColumnName("passportscan");
             entity.Property(e => e.Patronymic)
                 .HasColumnType("character varying")
                 .HasColumnName("patronymic");

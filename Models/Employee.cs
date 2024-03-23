@@ -9,9 +9,9 @@ public partial class Employee
 
     public string Fio { get; set; } = null!;
 
-    public int? Divisionid { get; set; }
-
     public int? Departmentid { get; set; }
+
+    public int? Divisionid { get; set; }
 
     public string? Code { get; set; }
 

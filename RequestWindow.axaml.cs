@@ -20,31 +20,27 @@ public partial class RequestWindow : Window
     private Pass currentPass = new Pass();
     private List<Purpose> purposesLists;
     private User currentUser;
-    private string imgName, fileImgName;
+    private string imgName, fileImgName, PDFName, filePDFName;
     private int _requestType;
     private ComboBox _purposeComboBox, _divisionComboBox, _fIOComboBox;
     private Image _personImage; 
     private CalendarDatePicker  _startDateCalendarPicker, _endDateCalendarPicker, _birthdateCalendarPicker, _grBirthdateCalendarPicker;
+    private MaskedTextBox _phoneMaskedTextBox, _grPhoneMaskedTextBox, _serialMaskedTextBox, _numberMaskedTextBox,  _grSerialMaskedTextBox, _grNumberMaskedTextBox;
+    private TextBlock _uploadedFileTextBlock;
 
     private TextBox _passFIOTextBox,
         _lastNameTextBox,
         _firstNameTextBox,
         _patronymicTextBox,
-        _phoneTextBox,
         _emailTextBox,
         _organizationTextBox,
         _noteTextBox,
-        _serialTextBox,
-        _numberTextBox,
         _grLastNameTextBox,
         _grFirstNameTextBox,
         _grPatronymicTextBox,
-        _grPhoneTextBox,
         _grEmailTextBox,
         _grOrganizationTextBox,
-        _grNoteTextBox,
-        _grSerialTextBox,
-        _grNumberTextBox;
+        _grNoteTextBox;
     public RequestWindow()
     {
         MinHeight = 700;
@@ -64,25 +60,29 @@ public partial class RequestWindow : Window
         
         InitializeComponent();
 
-        //_passFIOTextBox = this.FindControl<TextBox>("PassFIOTextBox");
+        _passFIOTextBox = this.FindControl<TextBox>("PassFIOTextBox");
         _lastNameTextBox = this.FindControl<TextBox>("LastNameTextBox");
         _firstNameTextBox = this.FindControl<TextBox>("FirstNameTextBox");
         _patronymicTextBox = this.FindControl<TextBox>("PatronymicTextBox");
-        _phoneTextBox = this.FindControl<TextBox>("PhoneTextBox");
         _emailTextBox = this.FindControl<TextBox>("EmailTextBox");
         _organizationTextBox = this.FindControl<TextBox>("OrganizationTextBox");
         _noteTextBox = this.FindControl<TextBox>("NoteTextBox");
-        _serialTextBox = this.FindControl<TextBox>("SerialTextBox");
-        _numberTextBox = this.FindControl<TextBox>("NumberTextBox");
         _grLastNameTextBox = this.FindControl<TextBox>("GrLastNameTextBox");
         _grFirstNameTextBox = this.FindControl<TextBox>("GrFirstNameTextBox");
         _grPatronymicTextBox = this.FindControl<TextBox>("GrPatronymicTextBox");
-        _grPhoneTextBox = this.FindControl<TextBox>("GrPhoneTextBox");
         _grEmailTextBox = this.FindControl<TextBox>("GrEmailTextBox");
         _grOrganizationTextBox = this.FindControl<TextBox>("GrOrganizationTextBox");
         _grNoteTextBox = this.FindControl<TextBox>("GrNoteTextBox");
-        _grSerialTextBox = this.FindControl<TextBox>("GrSerialTextBox");
-        _grNumberTextBox = this.FindControl<TextBox>("GrNumberTextBox");
+
+        _uploadedFileTextBlock = this.FindControl<TextBlock>("UploadedFileTextBlock");
+
+        _phoneMaskedTextBox = this.FindControl<MaskedTextBox>("PhoneMaskedTextBox");
+        _grPhoneMaskedTextBox = this.FindControl<MaskedTextBox>("GrPhoneMaskedTextBox");
+        _serialMaskedTextBox = this.FindControl<MaskedTextBox>("SerialMaskedTextBox");
+        _numberMaskedTextBox = this.FindControl<MaskedTextBox>("NumberMaskedTextBox");
+        _grSerialMaskedTextBox = this.FindControl<MaskedTextBox>("GrSerialMaskedTextBox");
+        _grNumberMaskedTextBox = this.FindControl<MaskedTextBox>("GrNumberMaskedTextBox");
+        
 
         _purposeComboBox = this.FindControl<ComboBox>("PurposeComboBox");
         _divisionComboBox = this.FindControl<ComboBox>("DivisionComboBox");
@@ -116,8 +116,8 @@ public partial class RequestWindow : Window
             string item = p.Name;
             items.Add(item);
         }
-        
         var _divisions = context.Employees.ToList();
+        var testtest = context.Employees.Where(d => d.Divisionid == 1).FirstOrDefault();
 
         _divisionComboBox.Items = items;
 
@@ -125,6 +125,7 @@ public partial class RequestWindow : Window
         currentUser = user;
 
         currentRequest.Photo = "one_person.png";
+
 
         if (requestType == 2)
         {
@@ -163,8 +164,8 @@ public partial class RequestWindow : Window
     private void EnterButton_OnClick(object? sender, RoutedEventArgs e)
     {
         if (_firstNameTextBox.Text != "" && _lastNameTextBox.Text != "" && _patronymicTextBox.Text != "" &&
-            _emailTextBox.Text != "" && _phoneTextBox.Text != "" && _noteTextBox.Text != "" && _serialTextBox.Text != ""
-            && _numberTextBox.Text != "" && _purposeComboBox.SelectedIndex != -1 &&
+            _emailTextBox.Text != "" && _phoneMaskedTextBox.Text != "" && _noteTextBox.Text != "" && _serialMaskedTextBox.Text != ""
+            && _numberMaskedTextBox.Text != "" && _purposeComboBox.SelectedIndex != -1 &&
             _birthdateCalendarPicker.SelectedDate != null && _startDateCalendarPicker.SelectedDate != null && _endDateCalendarPicker.SelectedDate != null &&
             _fIOComboBox.SelectedIndex != -1 && _divisionComboBox.SelectedIndex != -1)
         {
@@ -192,15 +193,16 @@ public partial class RequestWindow : Window
                     currentRequest.Lastname = _lastNameTextBox.Text;
                     currentRequest.Patronymic = _patronymicTextBox.Text;
                     currentRequest.Email = _emailTextBox.Text;
-                    currentRequest.Phone = _phoneTextBox.Text;
+                    currentRequest.Phone = _phoneMaskedTextBox.Text;
                     currentRequest.Note = _noteTextBox.Text;
-                    currentRequest.Passport = _serialTextBox.Text + _numberTextBox.Text;
+                    currentRequest.Passport = _serialMaskedTextBox.Text + _numberMaskedTextBox.Text;
                     currentRequest.Organisation = _organizationTextBox.Text;
                     currentRequest.Birthdate = DateOnly.FromDateTime(_birthdateCalendarPicker.SelectedDate.Value);
                     currentRequest.Divisionrequestid = currentDivisionRequest.Id;
                     currentRequest.Passid = currentPass.Id;
                     currentRequest.Userid = currentUser.Id;
                     currentRequest.Typeid = _requestType;
+                    currentRequest.Passportscan = PDFName;
 
                     context.Requests.Add(currentRequest);
                     context.SaveChanges();
@@ -212,6 +214,14 @@ public partial class RequestWindow : Window
                     else
                     {
                         File.Copy(fileImgName, $"../../../Assets/Images/{imgName}");
+                    }
+                    if (File.Exists($"../../../Assets/Files/{PDFName}"))
+                    {
+                        // Пропуск добавления файла
+                    }
+                    else
+                    {
+                        File.Copy(filePDFName, $"../../../Assets/Files/{PDFName}");
                     }
                     
                     MessageWindow messageWindow = new MessageWindow("Вы успешно записались на одиночное посещение");
@@ -225,15 +235,16 @@ public partial class RequestWindow : Window
                     currentRequest.Lastname = _grLastNameTextBox.Text;
                     currentRequest.Patronymic = _grPatronymicTextBox.Text;
                     currentRequest.Email = _grEmailTextBox.Text;
-                    currentRequest.Phone = _grPhoneTextBox.Text;
+                    currentRequest.Phone = _grPhoneMaskedTextBox.Text;
                     currentRequest.Note = _grNoteTextBox.Text;
-                    currentRequest.Passport = _grSerialTextBox.Text + _numberTextBox.Text;
+                    currentRequest.Passport = _grSerialMaskedTextBox.Text + _numberMaskedTextBox.Text;
                     currentRequest.Organisation = _grOrganizationTextBox.Text;
                     currentRequest.Birthdate = DateOnly.FromDateTime(_grBirthdateCalendarPicker.SelectedDate.Value);
                     currentRequest.Divisionrequestid = currentDivisionRequest.Id;
                     currentRequest.Passid = currentPass.Id;
                     currentRequest.Userid = currentUser.Id;
                     currentRequest.Typeid = _requestType;
+                    currentRequest.Passportscan = PDFName;
                     
                     context.Requests.Add(currentRequest);
                     context.SaveChanges();
@@ -245,6 +256,15 @@ public partial class RequestWindow : Window
                     else
                     {
                         File.Copy(fileImgName, $"../../../Assets/Images/{imgName}");
+                    }
+
+                    if (File.Exists($"../../../Assets/Files/{PDFName}"))
+                    {
+                        // Пропуск добавления файла
+                    }
+                    else
+                    {
+                        File.Copy(filePDFName, $"../../../Assets/Files/{PDFName}");
                     }
                     
                     MessageWindow messageWindow = new MessageWindow("Вы успешно записались на групповое посещение");
@@ -293,24 +313,31 @@ public partial class RequestWindow : Window
         _lastNameTextBox.Text = "";
         _firstNameTextBox.Text = "";
         _patronymicTextBox.Text = "";
-        _phoneTextBox.Text = "";
+        _phoneMaskedTextBox.Text = "";
         _emailTextBox.Text = "";
         _organizationTextBox.Text = "";
         _noteTextBox.Text = "";
-        _serialTextBox.Text = "";
-        _numberTextBox.Text = "";
+        _serialMaskedTextBox.Text = "";
+        _numberMaskedTextBox.Text = "";
         _grLastNameTextBox.Text = "";
         _grFirstNameTextBox.Text = "";
         _grPatronymicTextBox.Text = "";
-        _grPhoneTextBox.Text = "";
+        _grPhoneMaskedTextBox.Text = "";
         _grEmailTextBox.Text = "";
         _grOrganizationTextBox.Text = "";
         _grNoteTextBox.Text = "";
-        _grSerialTextBox.Text = "";
-        _grNumberTextBox.Text = "";
+        _grSerialMaskedTextBox.Text = "";
+        _grNumberMaskedTextBox.Text = "";
+
+        _uploadedFileTextBlock.Text = "";
+        filePDFName = "";
+        currentRequest.Photo = "one_person.png";
+        Bitmap img = new Bitmap("../../../Assets/one_person.png");
+        _personImage.Source = img;
 
         _purposeComboBox.SelectedIndex = -1;
         _divisionComboBox.SelectedIndex = -1;
+        _fIOComboBox.SelectedIndex = -1;
 
         _startDateCalendarPicker.SelectedDate = null;
         _endDateCalendarPicker.SelectedDate = null;
@@ -330,12 +357,8 @@ public partial class RequestWindow : Window
         List<string> items = new List<string>();
         try
         {
-            int i = _divisionComboBox.SelectedIndex;
-            i++;
-            var _divisions = context.Employees.ToList();
-            _divisions = _divisions.Where(d => d.Divisionid == _divisionComboBox.SelectedIndex + 1).ToList();
-            var purposes = context.Employees.Where(d => d.Divisionid.Equals(i)).ToList();
-            
+            var _divisions = context.Employees.Where(d => d.Divisionid == _divisionComboBox.SelectedIndex + 1).ToList();
+
             foreach (var p in _divisions)
             {
                 string item = p.Fio;
@@ -348,8 +371,19 @@ public partial class RequestWindow : Window
         {
 
         }
-        //var purposes = context.Employees.Where(d => d.Divisionid == _divisionComboBox.SelectedIndex + 1).ToList();
+    }
 
-
+    private async void UploadFileButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFileDialog dialog = new OpenFileDialog();
+        dialog.Filters.Add(new FileDialogFilter()
+        {
+            Extensions = { "pdf"}
+        });
+        var result = await dialog.ShowAsync(this);
+        PDFName = result[0].Split("\\").Last();
+        filePDFName = result[0];
+        
+        _uploadedFileTextBlock.Text = PDFName;
     }
 }
