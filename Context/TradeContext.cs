@@ -20,13 +20,15 @@ public partial class TradeContext : DbContext
 
     public virtual DbSet<Division> Divisions { get; set; }
 
+    public virtual DbSet<Divisionrequest> Divisionrequests { get; set; }
+
     public virtual DbSet<Goal> Goals { get; set; }
 
     public virtual DbSet<Pass> Passes { get; set; }
 
-    public virtual DbSet<Purpose> Purposes { get; set; }
-
     public virtual DbSet<Request> Requests { get; set; }
+
+    public virtual DbSet<Requesttype> Requesttypes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -66,6 +68,26 @@ public partial class TradeContext : DbContext
                 .HasColumnName("name");
         });
 
+        modelBuilder.Entity<Divisionrequest>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("divisionrequest_pk");
+
+            entity.ToTable("divisionrequest");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Divisionid).HasColumnName("divisionid");
+            entity.Property(e => e.Fio)
+                .HasColumnType("character varying")
+                .HasColumnName("fio");
+
+            entity.HasOne(d => d.Division).WithMany(p => p.Divisionrequests)
+                .HasForeignKey(d => d.Divisionid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("divisionrequest_division_fk");
+        });
+
         modelBuilder.Entity<Goal>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("goal_pk");
@@ -82,33 +104,21 @@ public partial class TradeContext : DbContext
 
         modelBuilder.Entity<Pass>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("pass");
+            entity.HasKey(e => e.Id).HasName("pass_pk");
 
-            entity.Property(e => e.Enddate).HasColumnName("enddate");
-            entity.Property(e => e.Goalid).HasColumnName("goalid");
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Startdate).HasColumnName("startdate");
-
-            entity.HasOne(d => d.Goal).WithMany()
-                .HasForeignKey(d => d.Goalid)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("pass_fk");
-        });
-
-        modelBuilder.Entity<Purpose>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("purpose_pk");
-
-            entity.ToTable("purpose");
+            entity.ToTable("pass");
 
             entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
-            entity.Property(e => e.Name)
-                .HasColumnType("character varying")
-                .HasColumnName("name");
+            entity.Property(e => e.Enddate).HasColumnName("enddate");
+            entity.Property(e => e.Goalid).HasColumnName("goalid");
+            entity.Property(e => e.Startdate).HasColumnName("startdate");
+
+            entity.HasOne(d => d.Goal).WithMany(p => p.Passes)
+                .HasForeignKey(d => d.Goalid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pass_fk");
         });
 
         modelBuilder.Entity<Request>(entity =>
@@ -121,6 +131,7 @@ public partial class TradeContext : DbContext
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.Birthdate).HasColumnName("birthdate");
+            entity.Property(e => e.Divisionrequestid).HasColumnName("divisionrequestid");
             entity.Property(e => e.Email)
                 .HasColumnType("character varying")
                 .HasColumnName("email");
@@ -149,17 +160,36 @@ public partial class TradeContext : DbContext
             entity.Property(e => e.Photo)
                 .HasColumnType("character varying")
                 .HasColumnName("photo");
-            entity.Property(e => e.Purpose).HasColumnName("purpose");
+            entity.Property(e => e.Typeid).HasColumnName("typeid");
             entity.Property(e => e.Userid).HasColumnName("userid");
 
-            entity.HasOne(d => d.PurposeNavigation).WithMany(p => p.Requests)
-                .HasForeignKey(d => d.Purpose)
-                .HasConstraintName("request_fk1");
+            entity.HasOne(d => d.Divisionrequest).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.Divisionrequestid)
+                .HasConstraintName("request_divisionrequest_fk");
+
+            entity.HasOne(d => d.Pass).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.Passid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("request_fk");
 
             entity.HasOne(d => d.User).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.Userid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("request_fk");
+                .HasConstraintName("request_fk_2");
+        });
+
+        modelBuilder.Entity<Requesttype>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("requesttype_pk");
+
+            entity.ToTable("requesttype");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasColumnType("character varying")
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<User>(entity =>

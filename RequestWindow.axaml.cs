@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,6 +16,8 @@ public partial class RequestWindow : Window
 {
     private Grid _singleGrid,_groupGrid; 
     private Request currentRequest = new Request();
+    private Divisionrequest currentDivisionRequest = new Divisionrequest();
+    private Pass currentPass = new Pass();
     private List<Purpose> purposesLists;
     private User currentUser;
     private string imgName, fileImgName;
@@ -95,7 +99,7 @@ public partial class RequestWindow : Window
         TradeContext context = new TradeContext();
 
         List<string> items = new List<string>();
-        var purposes = context.Purposes.ToList();
+        var purposes = context.Goals.ToList();
         foreach (var p in purposes)
         {
             string item = p.Name;
@@ -104,6 +108,7 @@ public partial class RequestWindow : Window
 
         _purposeComboBox.Items = items;
         
+        items = new List<string>();
         var divisions = context.Divisions.ToList();
         foreach (var p in divisions)
         {
@@ -115,6 +120,8 @@ public partial class RequestWindow : Window
 
         _requestType = requestType;
         currentUser = user;
+
+        currentRequest.Photo = "one_person.png";
 
         if (requestType == 2)
         {
@@ -142,10 +149,142 @@ public partial class RequestWindow : Window
 
         Bitmap newImg = new Bitmap(fileImgName);
         currentRequest.Photo = imgName;
-        //_personImage.Source = newImg;
+        _personImage.Source = newImg;
     }
 
     private void ClearButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        ClearFields();
+    }
+
+    private void EnterButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_firstNameTextBox.Text != "" && _lastNameTextBox.Text != "" && _patronymicTextBox.Text != "" &&
+            _emailTextBox.Text != "" && _phoneTextBox.Text != "" && _noteTextBox.Text != "" && _serialTextBox.Text != ""
+            && _numberTextBox.Text != "" && _purposeComboBox.SelectedIndex != -1 &&
+            _birthdateCalendarPicker.SelectedDate != null && _startDateCalendarPicker.SelectedDate != null && _endDateCalendarPicker.SelectedDate != null &&
+            _passFIOTextBox.Text != "" && _divisionComboBox.SelectedIndex != -1)
+        {
+            try
+            {
+                TradeContext context = new TradeContext();
+                currentDivisionRequest.Divisionid = _divisionComboBox.SelectedIndex + 1;
+                currentDivisionRequest.Fio = _passFIOTextBox.Text;
+
+                context.Divisionrequests.Add(currentDivisionRequest);
+                context.SaveChanges();
+
+                currentPass.Goalid = _purposeComboBox.SelectedIndex + 1;
+
+                currentPass.Startdate = DateOnly.FromDateTime(_startDateCalendarPicker.SelectedDate.Value);
+                currentPass.Enddate = DateOnly.FromDateTime(_endDateCalendarPicker.SelectedDate.Value);
+                context.Passes.Add(currentPass);
+                context.SaveChanges();
+            
+            
+        
+                if (_requestType == 1)
+                {
+                    currentRequest.Firstname = _firstNameTextBox.Text;
+                    currentRequest.Lastname = _lastNameTextBox.Text;
+                    currentRequest.Patronymic = _patronymicTextBox.Text;
+                    currentRequest.Email = _emailTextBox.Text;
+                    currentRequest.Phone = _phoneTextBox.Text;
+                    currentRequest.Note = _noteTextBox.Text;
+                    currentRequest.Passport = _serialTextBox.Text + _numberTextBox.Text;
+                    currentRequest.Organisation = _organizationTextBox.Text;
+                    currentRequest.Birthdate = DateOnly.FromDateTime(_birthdateCalendarPicker.SelectedDate.Value);
+                    currentRequest.Divisionrequestid = currentDivisionRequest.Id;
+                    currentRequest.Passid = currentPass.Id;
+                    currentRequest.Userid = currentUser.Id;
+                    currentRequest.Typeid = _requestType;
+
+                    context.Requests.Add(currentRequest);
+                    context.SaveChanges();
+
+                    if (File.Exists($"../../../Assets/Images/{imgName}"))
+                    {
+                        //Пропуск добавления фоторгафии
+                    }
+                    else
+                    {
+                        File.Copy(fileImgName, $"../../../Assets/Images/{imgName}");
+                    }
+                    
+                    MessageWindow messageWindow = new MessageWindow("Вы успешно записались на одиночное посещение");
+                    ClearFields();
+                    messageWindow.Show();
+                }
+                
+                else if (_requestType == 2)
+                {
+                    currentRequest.Firstname = _grFirstNameTextBox.Text;
+                    currentRequest.Lastname = _grLastNameTextBox.Text;
+                    currentRequest.Patronymic = _grPatronymicTextBox.Text;
+                    currentRequest.Email = _grEmailTextBox.Text;
+                    currentRequest.Phone = _grPhoneTextBox.Text;
+                    currentRequest.Note = _grNoteTextBox.Text;
+                    currentRequest.Passport = _grSerialTextBox.Text + _numberTextBox.Text;
+                    currentRequest.Organisation = _grOrganizationTextBox.Text;
+                    currentRequest.Birthdate = DateOnly.FromDateTime(_grBirthdateCalendarPicker.SelectedDate.Value);
+                    currentRequest.Divisionrequestid = currentDivisionRequest.Id;
+                    currentRequest.Passid = currentPass.Id;
+                    currentRequest.Userid = currentUser.Id;
+                    currentRequest.Typeid = _requestType;
+                    
+                    context.Requests.Add(currentRequest);
+                    context.SaveChanges();
+                    
+                    if (File.Exists($"../../../Assets/Images/{imgName}"))
+                    {
+                        //Пропуск добавления фоторгафии
+                    }
+                    else
+                    {
+                        File.Copy(fileImgName, $"../../../Assets/Images/{imgName}");
+                    }
+                    
+                    MessageWindow messageWindow = new MessageWindow("Вы успешно записались на групповое посещение");
+                    messageWindow.Show();
+                    ClearFields();
+                }
+            }
+            catch (Exception exception)
+            {
+                TradeContext context = new TradeContext();
+                try
+                {
+                    context.Passes.Remove(currentPass);
+                    context.SaveChanges();
+                }
+                catch (Exception e1)
+                {
+                    
+                }
+
+                try
+                {
+                    context.Divisionrequests.Remove(currentDivisionRequest);
+                    context.SaveChanges();
+                }
+                catch (Exception e1)
+                {
+
+                }
+
+                MessageWindow messageWindow = new MessageWindow("Во время добавления произошла ошибка");
+                messageWindow.Show();
+            }
+        }
+        else
+        {
+            MessageWindow messageWindow = new MessageWindow("Все поля должны быть заполнены");
+            messageWindow.Show();
+        }
+
+    }
+
+    private void ClearFields()
     {
         _passFIOTextBox.Text = "";
         _lastNameTextBox.Text = "";
@@ -173,18 +312,6 @@ public partial class RequestWindow : Window
         _startDateCalendarPicker.SelectedDate = null;
         _endDateCalendarPicker.SelectedDate = null;
         _birthdateCalendarPicker.SelectedDate = null;
-
-    }
-
-    private void EnterButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        if (_requestType == 1)
-        {
-            currentRequest = new Request()
-            {
-                
-            };
-        }
     }
 
     private void BackButton_OnClick(object? sender, RoutedEventArgs e)

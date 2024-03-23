@@ -121,7 +121,6 @@ C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\Dem18_Svy
 C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\Dem18_Svyatkin_Anton_409.AssemblyInfoInputs.cache
 C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\Dem18_Svyatkin_Anton_409.AssemblyInfo.cs
 C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\Dem18_Svyatkin_Anton_409.csproj.CoreCompileInputs.cache
-C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\Dem18_Sv.7B535B22.Up2Date
 C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\Dem18_Svyatkin_Anton_409.dll
 C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\refint\Dem18_Svyatkin_Anton_409.dll
 C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\Dem18_Svyatkin_Anton_409.pdb
@@ -152,3 +151,4 @@ C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\bin\Debug\net7.0\System.Di
 C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Diagnostics.EventLog.Messages.dll
 C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Diagnostics.EventLog.dll
 C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\Dem18_Svyatkin_Anton_409.sourcelink.json
+C:\Users\Anton\RiderProjects\Dem18_Svyatkin_Anton_409\obj\Debug\net7.0\Dem18_Sv.7B535B22.Up2Date

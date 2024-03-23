@@ -31,9 +31,13 @@ public partial class Request
 
     public string? Photo { get; set; }
 
-    public int? Purpose { get; set; }
+    public int? Divisionrequestid { get; set; }
 
-    public virtual Purpose? PurposeNavigation { get; set; }
+    public int? Typeid { get; set; }
+
+    public virtual Divisionrequest? Divisionrequest { get; set; }
+
+    public virtual Pass Pass { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

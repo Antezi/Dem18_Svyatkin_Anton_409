@@ -15,6 +15,11 @@ public partial class MessageWindow : Window
     
     public MessageWindow(string message)
     {
+        MinWidth = 350;
+        MaxWidth = 350;
+        MinHeight = 250;
+        MaxHeight = 250;
+        
         InitializeComponent();
 
         _messageTextBlock = this.FindControl<TextBlock>("MessageTextBlock");
