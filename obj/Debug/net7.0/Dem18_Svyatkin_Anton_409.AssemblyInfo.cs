@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Dem18_Svyatkin_Anton_409")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d5952b391730f020a970b9bd10bb32322addf4e2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3194a025a0769c79bf618387bf36eee8dd6a913e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Dem18_Svyatkin_Anton_409")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Dem18_Svyatkin_Anton_409")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

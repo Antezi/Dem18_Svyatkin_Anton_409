@@ -114,6 +114,7 @@ public partial class MainWindow : Window
                     currentUser = context.Users.Where(u => u.Login == _loginRegTextBox.Text && u.Password == CalculateMD5Hash(_passwordRegTextBox.Text)).FirstOrDefault();
                     ChooseRequestWindow chooseRequestWindow = new ChooseRequestWindow(currentUser);
                     chooseRequestWindow.Show();
+                    this.Close();
                 }
                 catch (Exception exception)
                 {

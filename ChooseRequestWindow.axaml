@@ -62,7 +62,7 @@
                     </Grid.RowDefinitions>
                     
                     <DockPanel Grid.Row="0">
-                        <ComboBox Margin="10, 0, 0, 0" Width="150" Height="30" HorizontalAlignment="Left" Name="TypeComboBox"/>
+                        <ComboBox Margin="10, 0, 0, 0" Width="150" Height="30" HorizontalAlignment="Left" Name="TypeComboBox" SelectionChanged="TypeComboBox_OnSelectionChanged"/>
                     </DockPanel>
                     
                     <ListBox Grid.Row="1" Background="White" Name="RequestListBox" HorizontalAlignment="Center">
@@ -76,6 +76,7 @@
                             <DataTemplate DataType="models:RequestView">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
@@ -102,6 +103,31 @@
                                     <StackPanel HorizontalAlignment="Center" Grid.Column="2">
                                         <Image Margin="10" Height="150" Width="150" Source="{Binding PhotoView}"/>
                                         <TextBlock Margin="10" Text="{Binding PassportscanView}"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                                        <ListBox >
+                                            <ListBox.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel Orientation="Vertical"/>
+                                                </ItemsPanelTemplate>
+                                            </ListBox.ItemsPanel>
+                                            
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate DataType="models:Groupuser">
+                                                    <Grid>
+                                                        <StackPanel>
+                                                            <TextBlock Margin="5" Text="{Binding Firstname}"/>
+                                                            <TextBlock Margin="5" Text="{Binding Lastname}"/>
+                                                            <TextBlock Margin="5" Text="{Binding Patronymic}"/>
+                                                            <TextBlock Margin="5" Text="{Binding Email}"/>
+                                                            <TextBlock Margin="5" Text="{Binding Phone}"/>
+                                                            <TextBlock Margin="5" Text="{Binding Passport}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>

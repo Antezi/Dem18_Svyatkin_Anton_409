@@ -399,39 +399,47 @@ public partial class RequestWindow : Window
 
     private void ClearFields()
     {
-        _passFIOTextBox.Text = "";
-        _lastNameTextBox.Text = "";
-        _firstNameTextBox.Text = "";
-        _patronymicTextBox.Text = "";
-        _phoneMaskedTextBox.Text = "";
-        _emailTextBox.Text = "";
-        _organizationTextBox.Text = "";
-        _noteTextBox.Text = "";
-        _serialMaskedTextBox.Text = "";
-        _numberMaskedTextBox.Text = "";
-        _grLastNameTextBox.Text = "";
-        _grFirstNameTextBox.Text = "";
-        _grPatronymicTextBox.Text = "";
-        _grPhoneMaskedTextBox.Text = "";
-        _grEmailTextBox.Text = "";
-        _grOrganizationTextBox.Text = "";
-        _grNoteTextBox.Text = "";
-        _grSerialMaskedTextBox.Text = "";
-        _grNumberMaskedTextBox.Text = "";
+        try
+        {
+            _passFIOTextBox.Text = "";
+            _lastNameTextBox.Text = "";
+            _firstNameTextBox.Text = "";
+            _patronymicTextBox.Text = "";
+            _phoneMaskedTextBox.Text = "";
+            _emailTextBox.Text = "";
+            _organizationTextBox.Text = "";
+            _noteTextBox.Text = "";
+            _serialMaskedTextBox.Text = "";
+            _numberMaskedTextBox.Text = "";
+            _grLastNameTextBox.Text = "";
+            _grFirstNameTextBox.Text = "";
+            _grPatronymicTextBox.Text = "";
+            _grPhoneMaskedTextBox.Text = "";
+            _grEmailTextBox.Text = "";
+            _grOrganizationTextBox.Text = "";
+            _grNoteTextBox.Text = "";
+            _grSerialMaskedTextBox.Text = "";
+            _grNumberMaskedTextBox.Text = "";
 
-        _uploadedFileTextBlock.Text = "";
-        filePDFName = "";
-        currentRequest.User.Photo = "one_person.png";
-        Bitmap img = new Bitmap("../../../Assets/one_person.png");
-        _personImage.Source = img;
+            _uploadedFileTextBlock.Text = "";
+            filePDFName = "";
+            currentUser.Photo = "one_person.png";
+            Bitmap img = new Bitmap("../../../Assets/one_person.png");
+            _personImage.Source = img;
 
-        _purposeComboBox.SelectedIndex = -1;
-        _divisionComboBox.SelectedIndex = -1;
-        _fIOComboBox.SelectedIndex = -1;
+            _purposeComboBox.SelectedIndex = -1;
+            _divisionComboBox.SelectedIndex = -1;
+            _fIOComboBox.SelectedIndex = -1;
 
-        _startDateCalendarPicker.SelectedDate = null;
-        _endDateCalendarPicker.SelectedDate = null;
-        _birthdateCalendarPicker.SelectedDate = null;
+            _startDateCalendarPicker.SelectedDate = null;
+            _endDateCalendarPicker.SelectedDate = null;
+            _birthdateCalendarPicker.SelectedDate = null;
+        }
+        catch (Exception e)
+        {
+
+        }
+
     }
 
     private void BackButton_OnClick(object? sender, RoutedEventArgs e)

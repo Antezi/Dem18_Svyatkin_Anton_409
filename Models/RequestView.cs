@@ -26,6 +26,8 @@ public partial class RequestView
     public string Note { get; set; } = null!;
 
     public DateOnly? Birthdate { get; set; }
+    public int? Groupusers { get; set; }
+    public virtual Groupuser? GroupusersNavigation { get; set; }
 
     public string Passport { get; set; } = null!;
     public string Passportscan { get; set; } = null!;
