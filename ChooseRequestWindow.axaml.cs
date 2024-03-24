@@ -37,11 +37,11 @@ public partial class ChooseRequestWindow : Window
         _requestListBox = this.FindControl<ListBox>("RequestListBox");
 
         List<string> items = new List<string>();
-        items.Add("Все");
+        _typeComboBox.Items.
         items.Add("Одиночные");
         items.Add("Групповые");
         
-        RequestUpdate();
+        SingleRequestUpdate();
     }
 
     private void InitializeComponent()
@@ -49,25 +49,25 @@ public partial class ChooseRequestWindow : Window
         AvaloniaXamlLoader.Load(this);
     }
 
-    public void RequestUpdate()
+    public void SingleRequestUpdate()
     {
         TradeContext context = new TradeContext();
-        currentRequestList = context.Requests.Select(r => new RequestView()
+        currentRequestList = context.Requests.Where(r => r.User.Id == currentUser.Id).Select(r => new RequestView()
         {
             Id = r.Id,
-            Firstname = r.Firstname,
-            Lastname = r.Lastname,
-            Patronymic = r.Patronymic,
-            Phone = r.Phone,
-            Email = r.Email,
-            Passport = r.Passport,
-            Photo = r.Photo,
+            Firstname = r.User.Firstname,
+            Lastname = r.User.Lastname,
+            Patronymic = r.User.Patronymic,
+            Phone = r.User.Phone,
+            Email = r.User.Email,
+            Passport = r.User.Passport,
+            Photo = r.User.Photo,
             Typeid = r.Typeid,
             Pass = r.Pass,
             Organisation = r.Organisation,
             Note = r.Note,
-            Birthdate = r.Birthdate,
-            Passportscan = r.Passportscan
+            Birthdate = r.User.Birthdate,
+            Passportscan = r.User.Passportscan,
         }).ToList();
 
         foreach (var r in currentRequestList)
@@ -129,6 +129,13 @@ public partial class ChooseRequestWindow : Window
     {
         RequestWindow requestWindow = new RequestWindow(currentUser, 2);
         requestWindow.Show();
+        this.Close();
+    }
+
+    private void BackButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainWindow mainWindow = new MainWindow();
+        mainWindow.Show();
         this.Close();
     }
 }

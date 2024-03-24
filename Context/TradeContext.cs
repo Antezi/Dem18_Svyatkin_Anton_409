@@ -26,6 +26,8 @@ public partial class TradeContext : DbContext
 
     public virtual DbSet<Goal> Goals { get; set; }
 
+    public virtual DbSet<Groupuser> Groupusers { get; set; }
+
     public virtual DbSet<Pass> Passes { get; set; }
 
     public virtual DbSet<Request> Requests { get; set; }
@@ -131,6 +133,42 @@ public partial class TradeContext : DbContext
                 .HasColumnName("name");
         });
 
+        modelBuilder.Entity<Groupuser>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("groupusers_pk");
+
+            entity.ToTable("groupusers");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Birthdate).HasColumnName("birthdate");
+            entity.Property(e => e.Email)
+                .HasColumnType("character varying[]")
+                .HasColumnName("email");
+            entity.Property(e => e.Firstname)
+                .HasColumnType("character varying[]")
+                .HasColumnName("firstname");
+            entity.Property(e => e.Lastname)
+                .HasColumnType("character varying[]")
+                .HasColumnName("lastname");
+            entity.Property(e => e.Passport)
+                .HasColumnType("character varying[]")
+                .HasColumnName("passport");
+            entity.Property(e => e.Passportscan)
+                .HasColumnType("character varying[]")
+                .HasColumnName("passportscan");
+            entity.Property(e => e.Patronymic)
+                .HasColumnType("character varying[]")
+                .HasColumnName("patronymic");
+            entity.Property(e => e.Phone)
+                .HasColumnType("character varying[]")
+                .HasColumnName("phone");
+            entity.Property(e => e.Photo)
+                .HasColumnType("character varying[]")
+                .HasColumnName("photo");
+        });
+
         modelBuilder.Entity<Pass>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pass_pk");
@@ -159,17 +197,8 @@ public partial class TradeContext : DbContext
             entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
-            entity.Property(e => e.Birthdate).HasColumnName("birthdate");
             entity.Property(e => e.Divisionrequestid).HasColumnName("divisionrequestid");
-            entity.Property(e => e.Email)
-                .HasColumnType("character varying")
-                .HasColumnName("email");
-            entity.Property(e => e.Firstname)
-                .HasColumnType("character varying")
-                .HasColumnName("firstname");
-            entity.Property(e => e.Lastname)
-                .HasColumnType("character varying")
-                .HasColumnName("lastname");
+            entity.Property(e => e.Groupusers).HasColumnName("groupusers");
             entity.Property(e => e.Note)
                 .HasColumnType("character varying")
                 .HasColumnName("note");
@@ -177,27 +206,16 @@ public partial class TradeContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("organisation");
             entity.Property(e => e.Passid).HasColumnName("passid");
-            entity.Property(e => e.Passport)
-                .HasColumnType("character varying")
-                .HasColumnName("passport");
-            entity.Property(e => e.Passportscan)
-                .HasColumnType("character varying")
-                .HasColumnName("passportscan");
-            entity.Property(e => e.Patronymic)
-                .HasColumnType("character varying")
-                .HasColumnName("patronymic");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(12)
-                .HasColumnName("phone");
-            entity.Property(e => e.Photo)
-                .HasColumnType("character varying")
-                .HasColumnName("photo");
             entity.Property(e => e.Typeid).HasColumnName("typeid");
             entity.Property(e => e.Userid).HasColumnName("userid");
 
             entity.HasOne(d => d.Divisionrequest).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.Divisionrequestid)
                 .HasConstraintName("request_divisionrequest_fk");
+
+            entity.HasOne(d => d.GroupusersNavigation).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.Groupusers)
+                .HasConstraintName("request_fk_3");
 
             entity.HasOne(d => d.Pass).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.Passid)
@@ -236,6 +254,7 @@ public partial class TradeContext : DbContext
             entity.Property(e => e.Appointment)
                 .HasColumnType("character varying")
                 .HasColumnName("appointment");
+            entity.Property(e => e.Birthdate).HasColumnName("birthdate");
             entity.Property(e => e.Email)
                 .HasColumnType("character varying")
                 .HasColumnName("email");
@@ -251,6 +270,9 @@ public partial class TradeContext : DbContext
             entity.Property(e => e.Passport)
                 .HasColumnType("character varying")
                 .HasColumnName("passport");
+            entity.Property(e => e.Passportscan)
+                .HasColumnType("character varying")
+                .HasColumnName("passportscan");
             entity.Property(e => e.Password)
                 .HasColumnType("character varying")
                 .HasColumnName("password");
@@ -260,6 +282,9 @@ public partial class TradeContext : DbContext
             entity.Property(e => e.Phone)
                 .HasColumnType("character varying")
                 .HasColumnName("phone");
+            entity.Property(e => e.Photo)
+                .HasColumnType("character varying")
+                .HasColumnName("photo");
             entity.Property(e => e.RoleCode).HasColumnName("role_code");
         });
 

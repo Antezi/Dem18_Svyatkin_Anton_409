@@ -25,7 +25,7 @@ public partial class RequestView
 
     public string Note { get; set; } = null!;
 
-    public DateOnly Birthdate { get; set; }
+    public DateOnly? Birthdate { get; set; }
 
     public string Passport { get; set; } = null!;
     public string Passportscan { get; set; } = null!;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Dem18_Svyatkin_Anton_409.Models;
 
-public partial class User
+public partial class UserView
 {
     public int Id { get; set; }
 
@@ -27,11 +27,14 @@ public partial class User
 
     public string? Appointment { get; set; }
 
-    public DateOnly? Birthdate { get; set; }
+    public DateOnly Birthdate { get; set; }
 
     public string? Photo { get; set; }
 
     public string? Passportscan { get; set; }
+    public string? FullPhotoPath { get; set; }
+    public string? FullPassportscanPath { get; set; }
+    public string FIO { get; set; }
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 }

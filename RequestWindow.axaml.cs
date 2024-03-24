@@ -9,6 +9,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Dem18_Svyatkin_Anton_409.Context;
 using Dem18_Svyatkin_Anton_409.Models;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Dem18_Svyatkin_Anton_409;
 
@@ -18,8 +19,10 @@ public partial class RequestWindow : Window
     private Request currentRequest = new Request();
     private Divisionrequest currentDivisionRequest = new Divisionrequest();
     private Pass currentPass = new Pass();
+    private List<UserView> usersList = new List<UserView>() ;
     private List<Purpose> purposesLists;
-    private User currentUser;
+    private User currentUser, updateUser;
+    private Groupuser currentGroupUser = new Groupuser();
     private string imgName, fileImgName, PDFName, filePDFName;
     private int _requestType;
     private ComboBox _purposeComboBox, _divisionComboBox, _fIOComboBox;
@@ -27,6 +30,7 @@ public partial class RequestWindow : Window
     private CalendarDatePicker  _startDateCalendarPicker, _endDateCalendarPicker, _birthdateCalendarPicker, _grBirthdateCalendarPicker;
     private MaskedTextBox _phoneMaskedTextBox, _grPhoneMaskedTextBox, _serialMaskedTextBox, _numberMaskedTextBox,  _grSerialMaskedTextBox, _grNumberMaskedTextBox;
     private TextBlock _uploadedFileTextBlock;
+    private ListBox _groupUsersListBox;
 
     private TextBox _passFIOTextBox,
         _lastNameTextBox,
@@ -91,6 +95,10 @@ public partial class RequestWindow : Window
         _startDateCalendarPicker = this.FindControl<CalendarDatePicker>("StartDateCalendarPicker");
         _endDateCalendarPicker = this.FindControl<CalendarDatePicker>("EndDateCalendarPicker");
         _birthdateCalendarPicker = this.FindControl<CalendarDatePicker>("BirthdateCalendarPicker");
+        _grBirthdateCalendarPicker = this.FindControl<CalendarDatePicker>("GrBirthdateCalendarPicker");
+        
+
+        _groupUsersListBox = this.FindControl<ListBox>("GroupUsersListBox");
 
         _singleGrid = this.FindControl<Grid>("SingleGrid");
         _groupGrid = this.FindControl<Grid>("GroupGrid");
@@ -98,6 +106,9 @@ public partial class RequestWindow : Window
         _personImage = this.FindControl<Image>("PersonImage");
 
         TradeContext context = new TradeContext();
+
+        //currentRequest.Userid = user.Id;
+        updateUser = context.Users.Where(u => u.Id == user.Id).FirstOrDefault();
 
         List<string> items = new List<string>();
         var purposes = context.Goals.ToList();
@@ -124,7 +135,7 @@ public partial class RequestWindow : Window
         _requestType = requestType;
         currentUser = user;
 
-        currentRequest.Photo = "one_person.png";
+        currentUser.Photo = "one_person.png";
 
 
         if (requestType == 2)
@@ -132,12 +143,49 @@ public partial class RequestWindow : Window
             _singleGrid.IsVisible = false;
             _groupGrid.IsVisible = true;
         }
+        
+        _startDateCalendarPicker.DisplayDateStart = DateTime.Today.AddDays(1);
+        _startDateCalendarPicker.DisplayDateEnd = DateTime.Today.AddDays(15);
+        _endDateCalendarPicker.DisplayDateStart = DateTime.Today.AddDays(1);
+        _endDateCalendarPicker.DisplayDateEnd = DateTime.Today.AddDays(15);
+        _birthdateCalendarPicker.DisplayDateEnd = DateTime.Today.AddYears(-16);
+        
+        LoadUserData();
     }
     
 
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+    }
+
+    private void LoadUserData()
+    {
+        _firstNameTextBox.Text = currentUser.Firstname;
+        _grFirstNameTextBox.Text = currentUser.Firstname;
+        _lastNameTextBox.Text = currentUser.Lastname;
+        _grLastNameTextBox.Text = currentUser.Lastname;
+        _patronymicTextBox.Text = currentUser.Patronymic;
+        _grPatronymicTextBox.Text = currentUser.Patronymic;
+        _serialMaskedTextBox.Text = currentUser.Passport.Substring(0, Math.Min(currentUser.Passport.Length, 4));
+        _grSerialMaskedTextBox.Text = currentUser.Passport.Substring(0, Math.Min(currentUser.Passport.Length, 4));
+        _numberMaskedTextBox.Text = currentUser.Passport.Substring(5);
+        _grNumberMaskedTextBox.Text = currentUser.Passport.Substring(5);
+        _emailTextBox.Text = currentUser.Email;
+        _grEmailTextBox.Text = currentUser.Email;
+        _phoneMaskedTextBox.Text = currentUser.Phone;
+        _grPhoneMaskedTextBox.Text = currentUser.Phone;
+        try
+        {
+            DateTime? birth = currentUser.Birthdate?.ToDateTime(new TimeOnly(0, 0));
+            _birthdateCalendarPicker.SelectedDate = birth;
+            _grBirthdateCalendarPicker.SelectedDate = birth;
+        }
+        catch (Exception e)
+        {
+
+        }
+
     }
 
     private async void UploadPhoto_OnClick(object? sender, RoutedEventArgs e)
@@ -152,7 +200,7 @@ public partial class RequestWindow : Window
         fileImgName = result[0];
 
         Bitmap newImg = new Bitmap(fileImgName);
-        currentRequest.Photo = imgName;
+        currentUser.Photo = imgName;
         _personImage.Source = newImg;
     }
 
@@ -189,21 +237,26 @@ public partial class RequestWindow : Window
         
                 if (_requestType == 1)
                 {
-                    currentRequest.Firstname = _firstNameTextBox.Text;
-                    currentRequest.Lastname = _lastNameTextBox.Text;
-                    currentRequest.Patronymic = _patronymicTextBox.Text;
-                    currentRequest.Email = _emailTextBox.Text;
-                    currentRequest.Phone = _phoneMaskedTextBox.Text;
+                    updateUser.Firstname = _firstNameTextBox.Text;
+                    updateUser.Lastname = _lastNameTextBox.Text;
+                    updateUser.Patronymic = _patronymicTextBox.Text;
+                    updateUser.Email = _emailTextBox.Text;
+                    currentUser.Phone = _phoneMaskedTextBox.Text;
+                    currentUser.Passport = _serialMaskedTextBox.Text + " " + _numberMaskedTextBox.Text;
+                    currentUser.Birthdate = DateOnly.FromDateTime(_birthdateCalendarPicker.SelectedDate.Value);
+                    currentUser.Passportscan = PDFName;
+
+                    context.SaveChanges();
+                    
                     currentRequest.Note = _noteTextBox.Text;
-                    currentRequest.Passport = _serialMaskedTextBox.Text + _numberMaskedTextBox.Text;
                     currentRequest.Organisation = _organizationTextBox.Text;
-                    currentRequest.Birthdate = DateOnly.FromDateTime(_birthdateCalendarPicker.SelectedDate.Value);
                     currentRequest.Divisionrequestid = currentDivisionRequest.Id;
                     currentRequest.Passid = currentPass.Id;
                     currentRequest.Userid = currentUser.Id;
                     currentRequest.Typeid = _requestType;
-                    currentRequest.Passportscan = PDFName;
 
+                    context.SaveChanges();
+                    
                     context.Requests.Add(currentRequest);
                     context.SaveChanges();
 
@@ -231,32 +284,69 @@ public partial class RequestWindow : Window
                 
                 else if (_requestType == 2)
                 {
-                    currentRequest.Firstname = _grFirstNameTextBox.Text;
-                    currentRequest.Lastname = _grLastNameTextBox.Text;
-                    currentRequest.Patronymic = _grPatronymicTextBox.Text;
-                    currentRequest.Email = _grEmailTextBox.Text;
-                    currentRequest.Phone = _grPhoneMaskedTextBox.Text;
+                    currentGroupUser.Firstname = new string[usersList.Count];
+                    currentGroupUser.Lastname = new string[usersList.Count];
+                    currentGroupUser.Patronymic = new string[usersList.Count];
+                    currentGroupUser.Email = new string[usersList.Count];
+                    currentGroupUser.Phone = new string[usersList.Count];
+                    currentGroupUser.Passport = new string[usersList.Count];
+                    currentGroupUser.Passportscan = new string[usersList.Count];
+                    currentGroupUser.Birthdate = new DateOnly[usersList.Count];
+                    currentGroupUser.Photo = new string[usersList.Count];
+                    currentGroupUser.Passportscan = new string[usersList.Count];
+                    
+                    for (int i = 0; i < usersList.Count; i++)
+                    {
+                        currentGroupUser.Firstname[i] = usersList[i].Firstname;
+                        currentGroupUser.Lastname[i] = usersList[i].Lastname;
+                        currentGroupUser.Patronymic[i] = usersList[i].Patronymic;
+                        currentGroupUser.Email[i] = usersList[i].Email;
+                        currentGroupUser.Phone[i] = usersList[i].Phone;
+                        currentGroupUser.Passport[i] = usersList[i].Passport;
+                        currentGroupUser.Passportscan[i] = usersList[i].Passportscan;
+                        currentGroupUser.Birthdate[i] = usersList[i].Birthdate;
+                        if (usersList[i].Photo != null)
+                        {
+                            currentGroupUser.Photo[i] = usersList[i].Photo;
+                            if (File.Exists($"../../../Assets/Images/{usersList[i].Photo}"))
+                            {
+                                //Пропуск добавления фоторгафии
+                            }
+                            else
+                            {
+                                File.Copy(usersList[i].FullPhotoPath, $"../../../Assets/Images/{usersList[i].Photo}");
+                            }
+                        }
+
+                        if (usersList[i].Passportscan != null)
+                        {
+                            currentGroupUser.Passportscan[i] = usersList[i].Passportscan;
+                            if (File.Exists($"../../../Assets/Images/{usersList[i].Passportscan}"))
+                            {
+                                //Пропуск добавления скана пасспорта
+                            }
+                            else
+                            {
+                                File.Copy(usersList[i].FullPassportscanPath, $"../../../Assets/Images/{usersList[i].Passportscan}");
+                            }
+                        }
+                    }
+
+                    context.Groupusers.Add(currentGroupUser);
+                    context.SaveChanges();
+                    
                     currentRequest.Note = _grNoteTextBox.Text;
-                    currentRequest.Passport = _grSerialMaskedTextBox.Text + _numberMaskedTextBox.Text;
                     currentRequest.Organisation = _grOrganizationTextBox.Text;
-                    currentRequest.Birthdate = DateOnly.FromDateTime(_grBirthdateCalendarPicker.SelectedDate.Value);
                     currentRequest.Divisionrequestid = currentDivisionRequest.Id;
                     currentRequest.Passid = currentPass.Id;
                     currentRequest.Userid = currentUser.Id;
                     currentRequest.Typeid = _requestType;
-                    currentRequest.Passportscan = PDFName;
+                    currentRequest.Groupusers = currentGroupUser.Id;
                     
                     context.Requests.Add(currentRequest);
                     context.SaveChanges();
                     
-                    if (File.Exists($"../../../Assets/Images/{imgName}"))
-                    {
-                        //Пропуск добавления фоторгафии
-                    }
-                    else
-                    {
-                        File.Copy(fileImgName, $"../../../Assets/Images/{imgName}");
-                    }
+    
 
                     if (File.Exists($"../../../Assets/Files/{PDFName}"))
                     {
@@ -331,7 +421,7 @@ public partial class RequestWindow : Window
 
         _uploadedFileTextBlock.Text = "";
         filePDFName = "";
-        currentRequest.Photo = "one_person.png";
+        currentRequest.User.Photo = "one_person.png";
         Bitmap img = new Bitmap("../../../Assets/one_person.png");
         _personImage.Source = img;
 
@@ -385,5 +475,48 @@ public partial class RequestWindow : Window
         filePDFName = result[0];
         
         _uploadedFileTextBlock.Text = PDFName;
+    }
+
+    private void AddUserButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_grFirstNameTextBox.Text != "" && _grLastNameTextBox.Text != "" && _grPatronymicTextBox.Text != "" &&
+            _grEmailTextBox.Text != "" && _grPhoneMaskedTextBox.Text != "" && _grNoteTextBox.Text != "" && _grSerialMaskedTextBox.Text != ""
+            && _grNumberMaskedTextBox.Text != "" && _purposeComboBox.SelectedIndex != -1 && _grBirthdateCalendarPicker.SelectedDate != null &&
+            _startDateCalendarPicker.SelectedDate != null && _endDateCalendarPicker.SelectedDate != null &&
+            _fIOComboBox.SelectedIndex != -1 && _divisionComboBox.SelectedIndex != -1 && _uploadedFileTextBlock.Text != null)
+        {
+            UserView newUser = new UserView
+            {
+                Firstname = _grFirstNameTextBox.Text,
+                Lastname = _grLastNameTextBox.Text,
+                Patronymic = _grPatronymicTextBox.Text,
+                Email = _grEmailTextBox.Text,
+                Phone = _grPhoneMaskedTextBox.Text,
+                Passport = _grSerialMaskedTextBox.Text + " " + _grNumberMaskedTextBox.Text,
+                Birthdate = DateOnly.FromDateTime(_grBirthdateCalendarPicker.SelectedDate.Value),
+                FIO = _grFirstNameTextBox.Text + " " + _grLastNameTextBox.Text + " " + _grPatronymicTextBox.Text
+            };
+        
+            usersList.Add(newUser);
+            _groupUsersListBox.Items = usersList;
+        }
+    }
+
+    private async void UploadGroupUserPhoto_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFileDialog dialog = new OpenFileDialog();
+        dialog.Filters.Add(new FileDialogFilter()
+        {
+            Extensions = { "jpg", "jpeg", "png" }
+        });
+        var result = await dialog.ShowAsync(this);
+        imgName = result[0].Split("\\").Last();
+        fileImgName = result[0];
+
+        Bitmap newImg = new Bitmap(fileImgName);
+        UserView obj = ((sender as Button).Parent.Parent.DataContext) as UserView;
+        usersList[obj.Id].FullPhotoPath = fileImgName;
+        usersList[obj.Id].Photo = imgName;
+        _groupUsersListBox.Items = usersList;
     }
 }
