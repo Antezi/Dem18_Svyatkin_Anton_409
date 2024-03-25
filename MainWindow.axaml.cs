@@ -55,7 +55,7 @@ public partial class MainWindow : Window
             Password = u.Password
         }).ToList();*/
         
-        if (_loginTextBox != null && _loginTextBox.Text != "" && _passwordTextBox != null && _passwordTextBox.Text != "")
+        if (_loginTextBox.Text != null && _loginTextBox.Text != "" && _passwordTextBox.Text != null && _passwordTextBox.Text != "")
         {
             TradeContext context = new TradeContext();
             currentUser = context.Users.Where(u => u.Login == _loginTextBox.Text && u.Password == CalculateMD5Hash(_passwordTextBox.Text)).FirstOrDefault();

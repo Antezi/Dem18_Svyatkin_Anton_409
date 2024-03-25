@@ -106,7 +106,7 @@
                                     </StackPanel>
                                     
                                     <StackPanel Grid.Column="3" HorizontalAlignment="Center">
-                                        <ListBox >
+                                        <ListBox Items="{Binding testList}">
                                             <ListBox.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <WrapPanel Orientation="Vertical"/>
@@ -114,7 +114,7 @@
                                             </ListBox.ItemsPanel>
                                             
                                             <ListBox.ItemTemplate>
-                                                <DataTemplate DataType="models:Groupuser">
+                                                <DataTemplate DataType="models:GroupUserItem">
                                                     <Grid>
                                                         <StackPanel>
                                                             <TextBlock Margin="5" Text="{Binding Firstname}"/>

@@ -15,7 +15,7 @@ namespace Dem18_Svyatkin_Anton_409;
 public partial class ChooseRequestWindow : Window
 {
     private ListBox _requestListBox, _groupListBox;
-    private List<Groupuser> _currenGroupList = new List<Groupuser>();
+    private List<GroupUserItem> _currenGroupList = new List<GroupUserItem>();
     private List<RequestView> currentRequestList = new List<RequestView>();
     private ComboBox _typeComboBox;
     private User currentUser;
@@ -26,10 +26,12 @@ public partial class ChooseRequestWindow : Window
     
     public ChooseRequestWindow(User user)
     {
+        /*
         MinHeight = 450;
         MaxHeight = 450;
         MinWidth = 800;
         MaxWidth = 800;
+        */
         
         InitializeComponent();
 
@@ -43,6 +45,7 @@ public partial class ChooseRequestWindow : Window
         items.Add("Одиночные");
         items.Add("Групповые");
         _typeComboBox.Items = items;
+        _typeComboBox.SelectedIndex = 0;
         
         SingleRequestUpdate();
     }
@@ -55,7 +58,7 @@ public partial class ChooseRequestWindow : Window
     public void SingleRequestUpdate()
     {
         TradeContext context = new TradeContext();
-        currentRequestList = context.Requests.Where(r => r.User.Id == currentUser.Id).Select(r => new RequestView()
+        currentRequestList = context.Requests.Where(r => r.User.Id == currentUser.Id && r.Typeid == 1).Select(r => new RequestView()
         {
             Id = r.Id,
             Firstname = r.User.Firstname,
@@ -114,7 +117,7 @@ public partial class ChooseRequestWindow : Window
     public void GroupRequestUpdate()
     {
         TradeContext context = new TradeContext();
-        currentRequestList = context.Requests.Where(r => r.User.Id == currentUser.Id).Select(r => new RequestView()
+        currentRequestList = context.Requests.Where(r => r.User.Id == currentUser.Id && r.Typeid == 2).Select(r => new RequestView()
         {
             Id = r.Id,
             Firstname = r.User.Firstname,
@@ -168,24 +171,25 @@ public partial class ChooseRequestWindow : Window
             {
                 r.TypeView = "Тип посещения: Групповое";
             }
-            
 
 
-
-           for (int i = 0; i < r.GroupusersNavigation.Firstname.Length; i++)
+            if (r.Typeid != 1)
             {
-                Groupuser currentGroupUser = new Groupuser
+                for (int i = 0; i < r.GroupusersNavigation.Firstname.Length; i++)
                 {
-                    Firstname = r.GroupusersNavigation.Firstname,
-                    Lastname = r.GroupusersNavigation.Lastname,
-                    Patronymic = r.GroupusersNavigation.Patronymic,
-                    Email = r.GroupusersNavigation.Email,
-                    Phone = r.GroupusersNavigation.Phone,
-                    Passport = r.GroupusersNavigation.Passport
-                };
-                _currenGroupList.Add(currentGroupUser);
+                    var currentGroupUser = new GroupUserItem(){
+                        Firstname = r.GroupusersNavigation.Firstname[i],
+                        Lastname = r.GroupusersNavigation.Lastname[i],
+                        Patronymic = r.GroupusersNavigation.Patronymic[i],
+                        Email = r.GroupusersNavigation.Email[i],
+                        Phone = r.GroupusersNavigation.Phone[i],
+                        Passport = r.GroupusersNavigation.Passport[i]
+                    };
+                    _currenGroupList.Add(currentGroupUser);
+                }
+
+                r.testList = _currenGroupList;
             }
-           _groupListBox.Items = _currenGroupList;
         }
         _requestListBox.Items = currentRequestList;
     }
